@@ -8,9 +8,12 @@ namespace PictureSort.Models
 {
     public class PictureInfo
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public bool IsCatched { get; set; } = false;
         public string Remark { get; set; }
         public string SubFolder { get; set; }
+        public string CopyFrom { get; set; }
+
+        public string SaveAs { get; set; }
     }
 }

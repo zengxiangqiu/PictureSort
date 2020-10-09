@@ -7,6 +7,32 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal"  Grid.ColumnSpan="2">
+        <TextBlock Text="搜索对象"/>
+        <TextBox IsReadOnly="True"  Width="200"/>
+         <Button Content="选择" Click="btnImport_click"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.ColumnSpan="2" >
+            <TextBlock Text="搜索路径"/>
+            <TextBox IsReadOnly="True"  Width="200"/>
+            <Button Content="选择"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"  Grid.Row="2" Grid.ColumnSpan="2" >
+            <TextBlock Text="保存路径"/>
+            <TextBox IsReadOnly="True"  Width="200"/>
+            <Button Content="选择"/>
+        </StackPanel>
+        <DataGrid Grid.Row="3" Grid.ColumnSpan="3" AutoGenerateColumns="True"/>
     </Grid>
 </Window>
