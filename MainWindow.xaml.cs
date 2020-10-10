@@ -29,7 +29,6 @@ namespace PictureSort
         {
             InitializeComponent();
             this.DataContext = new PsViewModel();
-            repository.updatePbDelegate = new PsRepository.UpdateProgressBarDelegate(ProgressBar1.SetValue);
         }
 
         private void btnImport_click(object sender, RoutedEventArgs e)

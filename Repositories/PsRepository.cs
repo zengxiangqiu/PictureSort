@@ -21,8 +21,7 @@ namespace PictureSort.Repositories
 
     public class PsRepository
     {
-        public delegate void UpdateProgressBarDelegate(System.Windows.DependencyProperty dp, Object value);
-        public UpdateProgressBarDelegate updatePbDelegate;
+        private object lockObj = new object();
 
         public ObservableCollection<PictureInfo> ImportSource(string path)
         {
@@ -46,7 +45,7 @@ namespace PictureSort.Repositories
             });
         }
 
-        public Task Clone(PictureInfo pInfo)
+        public Task Clone(PictureInfo pInfo,PsViewModel vm)
         {
             return Task.Factory.StartNew(() =>
             {
@@ -55,7 +54,10 @@ namespace PictureSort.Repositories
                     try
                     {
                         img.Save(pInfo.SaveAs);
-                        UpdatePb();
+                        lock (lockObj)
+                        {
+                            vm.ProgressValue++;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -63,11 +65,6 @@ namespace PictureSort.Repositories
                     }
                 }
             });
-        }
-
-        private void UpdatePb()
-        {
-            Dispatcher.CurrentDispatcher.BeginInvoke(updatePbDelegate,System.Windows.Threading.DispatcherPriority.Background,new object[] { System.Windows.Controls.ProgressBar.ValueProperty, 2 });
         }
 
         private void CreateSubFolder(ObservableCollection<PictureInfo> pInfos, string targetPath)
@@ -121,8 +118,9 @@ namespace PictureSort.Repositories
 
             Task.Factory.ContinueWhenAll(tasks, ancedents =>
             {
+                vm.ProgressMax = infos.Where(x => x.IsCatched).Count();
                 //sort
-                var cloneTasks = infos.Where(x => x.IsCatched).Select(Clone).ToArray();
+                var cloneTasks = infos.Where(x => x.IsCatched).Select(x=>Clone(x,vm)).ToArray();
 
                 Task.Factory.ContinueWhenAll(cloneTasks, subs =>
                 {

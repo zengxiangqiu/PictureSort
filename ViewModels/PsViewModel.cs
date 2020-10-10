@@ -50,6 +50,30 @@ namespace PictureSort.ViewModels
             }
         }
 
+        private double _progressValue;
+
+        public double ProgressValue
+        {
+            get { return _progressValue; }
+            set
+            {
+                _progressValue = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private double _progressMax;
+
+        public double ProgressMax
+        {
+            get { return _progressMax; }
+            set
+            {
+                _progressMax = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public ObservableCollection<PictureInfo> PictureInfos { get; set; } = new ObservableCollection<PictureInfo>();
 
         public event PropertyChangedEventHandler PropertyChanged;

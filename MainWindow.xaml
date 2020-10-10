@@ -40,7 +40,7 @@
         <DataGrid Grid.Row="3" Grid.ColumnSpan="3" AutoGenerateColumns="True" DataContext="{Binding Path=PictureInfos}" ItemsSource="{Binding}"/>
         <StatusBar Height="20"  Grid.Row="4" Grid.ColumnSpan="3" >
             <StatusBarItem >
-                <ProgressBar Width="200"  Height="20" Name="ProgressBar1"/>
+                <ProgressBar Width="200"  Height="20" Name="ProgressBar1" Value="{Binding Path=ProgressValue, Mode=TwoWay}" Maximum="{Binding Path=ProgressMax, Mode=TwoWay}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>
