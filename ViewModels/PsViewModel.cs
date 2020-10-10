@@ -62,7 +62,7 @@ namespace PictureSort.ViewModels
             }
         }
 
-        private double _progressMax;
+        private double _progressMax =100;
 
         public double ProgressMax
         {
