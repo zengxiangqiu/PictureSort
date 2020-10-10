@@ -16,18 +16,25 @@ using SixLabors.ImageSharp.Processing;
 
 namespace PictureSort.Repositories
 {
+    using PictureSort.ViewModels;
+    using System.Windows.Threading;
+
     public class PsRepository
     {
+        public delegate void UpdateProgressBarDelegate(System.Windows.DependencyProperty dp, Object value);
+        public UpdateProgressBarDelegate updatePbDelegate;
+
         public ObservableCollection<PictureInfo> ImportSource(string path)
         {
             var mapper = new Mapper(path);
-            var pInfos = mapper.Take<PictureInfo>().Select(x=>x.Value);
+            var pInfos = mapper.Take<PictureInfo>().Select(x => x.Value);
             return new ObservableCollection<PictureInfo>(pInfos);
         }
 
         public Task Sort(PictureInfo pInfos, string[] files)
         {
-            return Task.Factory.StartNew(() => {
+            return Task.Factory.StartNew(() =>
+            {
                 for (int i = 0; i < files.Length; i++)
                 {
                     if (files[i].Contains(pInfos.Id.Trim()))
@@ -48,6 +55,7 @@ namespace PictureSort.Repositories
                     try
                     {
                         img.Save(pInfo.SaveAs);
+                        UpdatePb();
                     }
                     catch (Exception ex)
                     {
@@ -55,6 +63,11 @@ namespace PictureSort.Repositories
                     }
                 }
             });
+        }
+
+        private void UpdatePb()
+        {
+            Dispatcher.CurrentDispatcher.BeginInvoke(updatePbDelegate,System.Windows.Threading.DispatcherPriority.Background,new object[] { System.Windows.Controls.ProgressBar.ValueProperty, 2 });
         }
 
         private void CreateSubFolder(ObservableCollection<PictureInfo> pInfos, string targetPath)
@@ -68,30 +81,51 @@ namespace PictureSort.Repositories
                    return "UnKnown";
            }).GroupBy(x => x).Select(x => x.Key);
 
-            subFolders.ForEach(x => {
+            subFolders.ForEach(x =>
+            {
                 if (!Directory.Exists(Path.Combine(targetPath, x)))
                 {
                     Directory.CreateDirectory(Path.Combine(targetPath, x));
                 }
             });
+
+            pInfos.ForEach(x => CombineSaveAs(x, targetPath));
         }
 
-        public void Compare(string sourcePath, string searchPath, string targetPath)
+        private void CombineSaveAs(PictureInfo pInfo, string targetPath)
         {
-            var infos = ImportSource(sourcePath);
+            var idParts = pInfo.Id.Split('-');
+            var subFolder = "";
+            if (idParts.Length >= 4)
+                subFolder = idParts[3];
+            else
+                subFolder = "UnKnown";
+            pInfo.SaveAs = Path.Combine(targetPath, subFolder, pInfo.Id + ".jpg");
+        }
 
-            var files =  Directory.GetFiles(searchPath);
+        public void Compare(PsViewModel vm)
+        {
+            var sourcePath = vm.SourceFile;
+            var searchPath = vm.SearchFolder;
+            var savePath = vm.SaveFolder;
+            var infos = vm.PictureInfos;
+
+            //infos.Clear();
+            //ImportSource(sourcePath).ForEach(infos.Add);
+
+            var files = Directory.GetFiles(searchPath, "*.jpg", SearchOption.AllDirectories);
 
             var tasks = infos.Select(x => Sort(x, files)).ToArray();
 
-            CreateSubFolder(infos, targetPath);
-            
+            CreateSubFolder(infos, savePath);
+
             Task.Factory.ContinueWhenAll(tasks, ancedents =>
             {
                 //sort
-                var cloneTasks =  infos.Where(x=>x.IsCatched).Select(Clone).ToArray();
+                var cloneTasks = infos.Where(x => x.IsCatched).Select(Clone).ToArray();
 
-                Task.Factory.ContinueWhenAll(cloneTasks, subs => { 
+                Task.Factory.ContinueWhenAll(cloneTasks, subs =>
+                {
                     //callback
 
                 });

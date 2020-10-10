@@ -104,6 +104,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\PictureInfo.cs" />
     <Compile Include="Repositories\PsRepository.cs" />
+    <Compile Include="ViewModels\PsViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

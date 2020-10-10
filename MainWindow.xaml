@@ -17,22 +17,31 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal"  Grid.ColumnSpan="2">
         <TextBlock Text="搜索对象"/>
-        <TextBox IsReadOnly="True"  Width="200"/>
+            <TextBox IsReadOnly="True"  Width="300" Text="{Binding Path = SourceFile}"/>
          <Button Content="选择" Click="btnImport_click"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.ColumnSpan="2" >
             <TextBlock Text="搜索路径"/>
-            <TextBox IsReadOnly="True"  Width="200"/>
-            <Button Content="选择"/>
+            <TextBox IsReadOnly="True"  Width="300" Text="{Binding Path=SearchFolder, Mode=TwoWay}"/>
+            <Button Content="选择" Click="btnSearch_Click"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal"  Grid.Row="2" Grid.ColumnSpan="2" >
-            <TextBlock Text="保存路径"/>
-            <TextBox IsReadOnly="True"  Width="200"/>
-            <Button Content="选择"/>
+        <StackPanel Orientation="Horizontal"  Grid.Row="2" Grid.ColumnSpan="2" Height="19" VerticalAlignment="Bottom" >
+            <TextBlock Text="保存路径" />
+            <TextBox IsReadOnly="True"  Width="300" Text="{Binding Path=SaveFolder}"/>
+            <Button Content="选择" Click="btnSave_Click"/>
         </StackPanel>
-        <DataGrid Grid.Row="3" Grid.ColumnSpan="3" AutoGenerateColumns="True"/>
+        <StackPanel Grid.Column="2" Grid.Row="1">
+            <Button Content="抓取" Click="btnSort_Click" Width="50"/>
+        </StackPanel>
+        <DataGrid Grid.Row="3" Grid.ColumnSpan="3" AutoGenerateColumns="True" DataContext="{Binding Path=PictureInfos}" ItemsSource="{Binding}"/>
+        <StatusBar Height="20"  Grid.Row="4" Grid.ColumnSpan="3" >
+            <StatusBarItem >
+                <ProgressBar Width="200"  Height="20" Name="ProgressBar1"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
