@@ -5,12 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PictureSort"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="图片抓取" Height="450" Width="900">
+    <Window.Resources>
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="5,5"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Width" Value="60"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5,0"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -19,29 +30,36 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal"  Grid.ColumnSpan="2">
+        <StackPanel Orientation="Horizontal"   >
         <TextBlock Text="搜索对象"/>
-            <TextBox IsReadOnly="True"  Width="300" Text="{Binding Path = SourceFile}"/>
+            <TextBox IsReadOnly="True"  Width="400" Text="{Binding Path = SourceFile}"/>
          <Button Content="选择" Click="btnImport_click"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.ColumnSpan="2" >
+        <StackPanel Orientation="Horizontal"  Grid.Row="1"  >
             <TextBlock Text="搜索路径"/>
-            <TextBox IsReadOnly="True"  Width="300" Text="{Binding Path=SearchFolder, Mode=TwoWay}"/>
+            <TextBox IsReadOnly="True"  Width="400" Text="{Binding Path=SearchFolder, Mode=TwoWay}"/>
             <Button Content="选择" Click="btnSearch_Click"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal"  Grid.Row="2" Grid.ColumnSpan="2" Height="19" VerticalAlignment="Bottom" >
+        <StackPanel Orientation="Horizontal"  Grid.Row="2"  Height="19" VerticalAlignment="Bottom" >
             <TextBlock Text="保存路径" />
-            <TextBox IsReadOnly="True"  Width="300" Text="{Binding Path=SaveFolder}"/>
+            <TextBox IsReadOnly="True"  Width="400" Text="{Binding Path=SaveFolder}"/>
             <Button Content="选择" Click="btnSave_Click"/>
         </StackPanel>
-        <StackPanel Grid.Column="2" Grid.Row="1">
-            <Button Content="抓取" Click="btnSort_Click" Width="50"/>
+        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
+            <Button Content="抓取" Click="btnSort_Click" Width="60" Name="btnSort" HorizontalAlignment="Left"/>
+            <Button Content="导出" Click="btnExport_Click"/>
         </StackPanel>
-        <DataGrid Grid.Row="3" Grid.ColumnSpan="3" AutoGenerateColumns="True" DataContext="{Binding Path=PictureInfos}" ItemsSource="{Binding}"/>
+        <DataGrid Grid.Row="3" Grid.ColumnSpan="3" AutoGenerateColumns="True" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" DataContext="{Binding Path=PictureInfos}" ItemsSource="{Binding}"/>
         <StatusBar Height="20"  Grid.Row="4" Grid.ColumnSpan="3" >
             <StatusBarItem >
-                <ProgressBar Width="200"  Height="20" Name="ProgressBar1" Value="{Binding Path=ProgressValue, Mode=TwoWay}" Maximum="{Binding Path=ProgressMax, Mode=TwoWay}"/>
-            </StatusBarItem>
+                <StackPanel Orientation="Horizontal"  Height="20" Margin="0,0">
+                    <TextBlock Text="进度"/>
+                    <ProgressBar Width="200"   Name="ProgressBar1" Value="{Binding Path=ProgressValue, Mode=TwoWay}" Maximum="{Binding Path=ProgressMax, Mode=TwoWay}"/>
+                    <TextBlock Text="{Binding Path=ProgressValue}" Visibility="{Binding ProgressValue}"/>
+                    <TextBlock Text="/"/>
+                    <TextBlock Text="{Binding Path=ProgressMax}"/>
+                </StackPanel>
+                </StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

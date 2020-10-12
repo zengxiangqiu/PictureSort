@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Npoi.Mapper.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -26,9 +27,12 @@ namespace PictureSort.Models
             }
         }
         public string Remark { get; set; }
+        [Ignore]
         public string SubFolder { get; set; }
+        [Ignore]
         public string CopyFrom { get; set; }
 
+        [Ignore]
         public string SaveAs { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;

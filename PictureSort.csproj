@@ -102,6 +102,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Config.cs" />
     <Compile Include="Models\PictureInfo.cs" />
     <Compile Include="Repositories\PsRepository.cs" />
     <Compile Include="ViewModels\PsViewModel.cs" />
