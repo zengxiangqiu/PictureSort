@@ -61,8 +61,6 @@ namespace PictureSort.Repositories
                     using (var img = Image.Load(pInfo.CopyFrom))
                     {
                         img.Save(pInfo.SaveAs);
-<<<<<<< HEAD
-=======
                         pInfo.Remark = "已抓取";
                     }
                 }
@@ -71,7 +69,6 @@ namespace PictureSort.Repositories
                     if (File.Exists(pInfo.SaveAs))
                     {
                         pInfo.Remark = "重复抓取";
->>>>>>> df265b8896a5a56447250db8aaed208ee656c8b7
                     }
                 }
                 catch (Exception ex)
@@ -84,44 +81,17 @@ namespace PictureSort.Repositories
                     {
                         vm.ProgressValue++;
                     }
-                    finally
-                    {
-
-                            vm.ProgressValue++;
-                            Console.WriteLine(vm.ProgressValue);
-                
-                    }
                 }
             });
         }
 
         private void SetSaveAs(ObservableCollection<PictureInfo> pInfos, string targetPath)
         {
-<<<<<<< HEAD
-            var subFolders = pInfos.Where(x=>x.IsCatched).Select(x =>
-=======
             pInfos.Select(x =>
->>>>>>> df265b8896a5a56447250db8aaed208ee656c8b7
            {
                var idParts = x.Id.Split('-');
                var lastFlag = "UnKnown";
                if (idParts.Length >= 4)
-<<<<<<< HEAD
-                   return idParts[3];
-               else
-                   return "UnKnown";
-           }).GroupBy(x => x).Select(x => x.Key);
-
-            subFolders.ForEach(x =>
-            {
-                if (!Directory.Exists(Path.Combine(targetPath, x)))
-                {
-                    Directory.CreateDirectory(Path.Combine(targetPath, x));
-                }
-            });
-
-            pInfos.Where(x=>x.IsCatched).ForEach(x => CombineSaveAs(x, targetPath));
-=======
                {
                    lastFlag = idParts[3];
                }
@@ -136,7 +106,6 @@ namespace PictureSort.Repositories
                    Directory.CreateDirectory(Path.Combine(targetPath, x.Key));
                }
            });
->>>>>>> df265b8896a5a56447250db8aaed208ee656c8b7
         }
 
         public void Export(PsViewModel vm,string path)
@@ -164,16 +133,11 @@ namespace PictureSort.Repositories
 
             Task.Factory.ContinueWhenAll(tasks, ancedents =>
             {
-<<<<<<< HEAD
-                vm.ProgressMax = infos.Where(x => x.IsCatched).Count();
-                Console.WriteLine(vm.ProgressMax);
-=======
                 SetSaveAs(infos, savePath);
 
                 var pInfoCatched = infos.Where(x => x.IsCatched);
                 vm.ProgressMax = pInfoCatched.Count();
                 vm.ProgressValue = 0;
->>>>>>> df265b8896a5a56447250db8aaed208ee656c8b7
                 //sort
                 var cloneTasks = pInfoCatched.Select(x => Clone(x, vm)).ToArray();
 
