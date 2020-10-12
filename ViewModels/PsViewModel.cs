@@ -50,9 +50,9 @@ namespace PictureSort.ViewModels
             }
         }
 
-        private double _progressValue;
+        private int _progressValue;
 
-        public double ProgressValue
+        public int ProgressValue
         {
             get { return _progressValue; }
             set

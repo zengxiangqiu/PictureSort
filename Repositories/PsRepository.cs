@@ -54,14 +54,17 @@ namespace PictureSort.Repositories
                     try
                     {
                         img.Save(pInfo.SaveAs);
-                        lock (lockObj)
-                        {
-                            vm.ProgressValue++;
-                        }
                     }
                     catch (Exception ex)
                     {
                         pInfo.Remark = ex.Message;
+                    }
+                    finally
+                    {
+
+                            vm.ProgressValue++;
+                            Console.WriteLine(vm.ProgressValue);
+                
                     }
                 }
             });
@@ -69,7 +72,7 @@ namespace PictureSort.Repositories
 
         private void CreateSubFolder(ObservableCollection<PictureInfo> pInfos, string targetPath)
         {
-            var subFolders = pInfos.Select(x =>
+            var subFolders = pInfos.Where(x=>x.IsCatched).Select(x =>
            {
                var idParts = x.Id.Split('-');
                if (idParts.Length >= 4)
@@ -86,7 +89,7 @@ namespace PictureSort.Repositories
                 }
             });
 
-            pInfos.ForEach(x => CombineSaveAs(x, targetPath));
+            pInfos.Where(x=>x.IsCatched).ForEach(x => CombineSaveAs(x, targetPath));
         }
 
         private void CombineSaveAs(PictureInfo pInfo, string targetPath)
@@ -119,6 +122,7 @@ namespace PictureSort.Repositories
             Task.Factory.ContinueWhenAll(tasks, ancedents =>
             {
                 vm.ProgressMax = infos.Where(x => x.IsCatched).Count();
+                Console.WriteLine(vm.ProgressMax);
                 //sort
                 var cloneTasks = infos.Where(x => x.IsCatched).Select(x=>Clone(x,vm)).ToArray();
 
