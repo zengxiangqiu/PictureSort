@@ -60,7 +60,7 @@ namespace PictureSort
                 //Get the path of specified file
                 var filePath = openFileDialog.FileName;
                 vm.SourceFile = filePath;
-                var infos = repository.ImportSource(vm.SourceFile);
+                var infos = repository.GetPInfoFromExcel(vm.SourceFile);
                 vm.PictureInfos.Clear();
                 infos.ToList().ForEach(vm.PictureInfos.Add);
                 ProgressBar1.Maximum = infos.Count();

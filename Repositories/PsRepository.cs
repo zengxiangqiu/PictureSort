@@ -19,6 +19,7 @@ namespace PictureSort.Repositories
     using NPOI.SS.Formula.Functions;
     using PictureSort.ViewModels;
     using System.Windows.Threading;
+    using PictureSort.Utils;
 
     public class PsRepository
     {
@@ -28,10 +29,11 @@ namespace PictureSort.Repositories
 
         public event Completed Sort_CompletedEvent;
 
-        public ObservableCollection<PictureInfo> ImportSource(string path)
+        public ObservableCollection<PictureInfo> GetPInfoFromExcel(string path)
         {
             var mapper = new Mapper(path);
-            var pInfos = mapper.Take<PictureInfo>().Select(x => x.Value);
+            var pInfos = mapper.Take<PictureInfo>().Select(x => x.Value)
+                .Distinct(new PInfoEqualityComparer());
             return new ObservableCollection<PictureInfo>(pInfos);
         }
 
@@ -91,9 +93,9 @@ namespace PictureSort.Repositories
            {
                var idParts = x.Id.Split('-');
                var lastFlag = "UnKnown";
-               if (idParts.Length >= 4)
+               if (idParts.Length >= 1)
                {
-                   lastFlag = idParts[3];
+                   lastFlag = idParts[0];
                }
                //savePath
                if (x.IsCatched)
@@ -112,6 +114,7 @@ namespace PictureSort.Repositories
         {
             var mapper = new Mapper();
             mapper.Map<PictureInfo>("编号", x => x.Id)
+                .Map<PictureInfo>("计数", x=>x.Count)
                 .Map<PictureInfo>("是否已抓取",x=>x.IsCatched)
                 .Map<PictureInfo>("备注", x => x.Remark);
             mapper.Save<PictureInfo>(path, vm.PictureInfos);

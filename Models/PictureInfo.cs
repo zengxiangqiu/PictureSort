@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace PictureSort.Models
 {
-    public class PictureInfo: INotifyPropertyChanged
+    public class PictureInfo : INotifyPropertyChanged
     {
         public string Id { get; set; }
 
+        public int Count { get; set; } = 1;
         private bool _isCatched = false;
         public bool IsCatched
         {
@@ -34,6 +35,7 @@ namespace PictureSort.Models
 
         [Ignore]
         public string SaveAs { get; set; }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
