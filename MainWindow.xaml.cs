@@ -43,6 +43,7 @@ namespace PictureSort
             Dispatcher.Invoke(() =>
             {
                 var vm = this.DataContext as PsViewModel;
+                vm.NotifyAllChanged();
                 MessageBox.Show($"已抓取{vm.ProgressValue}张图片", "Tips");
                 btnSort.IsEnabled = true;
             });

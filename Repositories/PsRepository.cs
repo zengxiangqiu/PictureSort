@@ -32,11 +32,25 @@ namespace PictureSort.Repositories
         public ObservableCollection<PictureInfo> GetPInfoFromExcel(string path)
         {
             var mapper = new Mapper(path);
-            var pInfos = mapper.Take<PictureInfo>().Select(x => x.Value)
+            var pInfos = mapper.Take<PictureInfo>().Select(x => x.Value).Select(x=> {
+                //截取3段
+                var parts = x.Id.Split('-');
+                var destination = new string[3] ;
+                if (parts.Length > 3)
+                    Array.Copy(parts, destination, 3);
+                x.Id =  string.Join("-",destination);
+                return x;
+            })
                 .Distinct(new PInfoEqualityComparer());
             return new ObservableCollection<PictureInfo>(pInfos);
         }
 
+        /// <summary>
+        /// 匹配
+        /// </summary>
+        /// <param name="pInfo"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         public Task Sort(PictureInfo pInfo, string[] files)
         {
             return Task.Factory.StartNew(() =>
@@ -60,15 +74,22 @@ namespace PictureSort.Repositories
             {
                 try
                 {
-                    using (var img = Image.Load(pInfo.CopyFrom))
+                    //根据qty 抓取
+                    for (int i = 0; i < pInfo.Count; i++)
                     {
-                        img.Save(pInfo.SaveAs);
-                        pInfo.Remark = "已抓取";
+                        //后缀
+                        var suffix = new StringBuilder("(1)".Length* i).Insert(0, "(1)", i).ToString();
+                        using (var img = Image.Load(pInfo.CopyFrom))
+                        {
+                            var filePath = Path.Combine(pInfo.SaveFolder, pInfo.NameWithoutSuffix+suffix+".jpg");
+                            img.Save( filePath);
+                        }
                     }
+                    pInfo.Remark = $"已抓取{pInfo.Count}次";
                 }
                 catch (System.IO.IOException ie)
                 {
-                    if (File.Exists(pInfo.SaveAs))
+                    if (File.Exists(pInfo.SaveFolder))
                     {
                         pInfo.Remark = "重复抓取";
                     }
@@ -81,7 +102,7 @@ namespace PictureSort.Repositories
                 {
                     lock (lockObj)
                     {
-                        vm.ProgressValue++;
+                        vm.ProgressValue+= pInfo.Count;
                     }
                 }
             });
@@ -99,7 +120,10 @@ namespace PictureSort.Repositories
                }
                //savePath
                if (x.IsCatched)
-                   x.SaveAs = Path.Combine(targetPath, lastFlag, x.Id + ".jpg");
+               {
+                   x.SaveFolder = Path.Combine(targetPath, lastFlag);
+                   x.NameWithoutSuffix = x.Id;
+               }
                return lastFlag;
            }).GroupBy(x => x).ForEach(x =>
            {
@@ -139,7 +163,8 @@ namespace PictureSort.Repositories
                 SetSaveAs(infos, savePath);
 
                 var pInfoCatched = infos.Where(x => x.IsCatched);
-                vm.ProgressMax = pInfoCatched.Count();
+                //sum of qty
+                vm.ProgressMax = pInfoCatched.Aggregate(0,(count,next)=> count+next.Count);
                 vm.ProgressValue = 0;
                 //sort
                 var cloneTasks = pInfoCatched.Select(x => Clone(x, vm)).ToArray();

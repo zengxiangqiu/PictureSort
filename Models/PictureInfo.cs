@@ -34,8 +34,10 @@ namespace PictureSort.Models
         public string CopyFrom { get; set; }
 
         [Ignore]
-        public string SaveAs { get; set; }
+        public string SaveFolder { get; set; }
 
+        [Ignore]
+        public string NameWithoutSuffix { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

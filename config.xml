@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CourseDef>
+	<Columns>
+		<Column>
+			<Prop>Id</Prop>
+			<Index>0</Index>
+			<DisplayName>编号</DisplayName>
+		</Column>
+         <Column>
+			<Prop>Count</Prop>
+			<Index>1</Index>
+			<DisplayName>计数</DisplayName>
+		</Column>
+
+		<Column>
+			<Prop>IsCatched</Prop>
+			<Index>2</Index>
+			<DisplayName>已匹配</DisplayName>
+		</Column>
+		<Column>
+			<Prop>Remark</Prop>
+			<Index>3</Index>
+			<DisplayName>抓取结果</DisplayName>
+		</Column>
+
+	</Columns>
+</CourseDef>
